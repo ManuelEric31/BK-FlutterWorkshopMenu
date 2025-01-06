@@ -15,6 +15,7 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   List<Restaurant> _restaurants = [];
   List<Restaurant> _filteredRestaurants = [];
+  final TextEditingController _searchController = TextEditingController();
   APIServices api = APIServices();
 
   Future<void> getResto() async {
@@ -31,6 +32,12 @@ class _DashboardPageState extends State<DashboardPage> {
   void initState() {
     super.initState();
     getResto();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   void _onSearchChanged(String query) {
@@ -53,6 +60,7 @@ class _DashboardPageState extends State<DashboardPage> {
         Container(
           padding: const EdgeInsets.all(15),
           child: TextField(
+            controller: _searchController,
             onChanged: _onSearchChanged,
             decoration: InputDecoration(
               labelText: 'Cari Restoran',
