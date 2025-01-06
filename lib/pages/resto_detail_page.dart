@@ -21,10 +21,15 @@ class RestaurantDetailPage extends StatefulWidget {
 class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
   void _launchURL(String url) async {
     final Uri uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
+    try {
       await launchUrl(uri);
-    } else {
-      throw 'Could not launch $url';
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('Could not open the website. Please check your settings.'),
+        ),
+      );
     }
   }
 
@@ -41,12 +46,15 @@ class _RestaurantDetailPageState extends State<RestaurantDetailPage> {
       'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude',
     );
 
-    if (await canLaunchUrl(googleMapUrl)) {
-      await launchUrl(googleMapUrl);
-    } else if (await canLaunchUrl(googleUrl)) {
-      await launchUrl(googleUrl);
-    } else {
-      throw 'Could not launch Google Maps';
+    try {
+      await launchUrl(googleUrl, mode: LaunchMode.externalApplication);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('Could not open Google Maps. Please check your settings.'),
+        ),
+      );
     }
   }
 
