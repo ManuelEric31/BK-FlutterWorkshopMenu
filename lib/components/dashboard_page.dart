@@ -14,6 +14,7 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   List<Restaurant> _restaurants = [];
+  List<Restaurant> _filteredRestaurants = [];
   APIServices api = APIServices();
 
   Future<void> getResto() async {
@@ -21,6 +22,7 @@ class _DashboardPageState extends State<DashboardPage> {
       print(responses);
       setState(() {
         _restaurants = responses;
+        _filteredRestaurants = responses;
       });
     });
   }
@@ -31,7 +33,18 @@ class _DashboardPageState extends State<DashboardPage> {
     getResto();
   }
 
-  void _onSearchChanged(String query) {}
+  void _onSearchChanged(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        _filteredRestaurants = _restaurants;
+      } else {
+        _filteredRestaurants = _restaurants
+            .where((restaurant) =>
+                restaurant.name.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,9 +70,9 @@ class _DashboardPageState extends State<DashboardPage> {
         ),
         Expanded(
           child: ListView.builder(
-            itemCount: _restaurants.length,
+            itemCount: _filteredRestaurants.length,
             itemBuilder: (context, index) {
-              final restaurant = _restaurants[index];
+              final restaurant = _filteredRestaurants[index];
               return RestaurantCard(restaurant: restaurant);
             },
           ),
